@@ -1,4 +1,4 @@
-package pl.dolega.creditcardmultidb.creditcard;
+package pl.dolega.creditcardmultidb.domain.creditcard;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
