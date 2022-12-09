@@ -7,10 +7,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
 import pl.dolega.creditcardmultidb.domain.creditcard.CreditCard;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 @Configuration
 public class CardDatabaseConfiguration {
@@ -37,5 +40,11 @@ public class CardDatabaseConfiguration {
                 .packages(CreditCard.class)
                 .persistenceUnit("card")
                 .build();
+    }
+
+    @Bean
+    public PlatformTransactionManager cardTransactionManager(
+            @Qualifier("cardEntityManagerFactory") LocalContainerEntityManagerFactoryBean cardEntityManagerFactor) {
+        return new JpaTransactionManager(Objects.requireNonNull(cardEntityManagerFactor.getObject()));
     }
 }

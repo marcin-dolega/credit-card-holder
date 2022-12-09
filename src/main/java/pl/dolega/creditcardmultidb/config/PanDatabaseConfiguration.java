@@ -8,11 +8,14 @@ import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
 import pl.dolega.creditcardmultidb.domain.creditcard.CreditCard;
 import pl.dolega.creditcardmultidb.domain.pan.CreditCardPAN;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 @Configuration
 public class PanDatabaseConfiguration {
@@ -32,6 +35,7 @@ public class PanDatabaseConfiguration {
                 .build();
     }
 
+    @Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean panEntityManagerFactory (
             @Qualifier("panDataSource") DataSource panDataSource,
@@ -40,5 +44,12 @@ public class PanDatabaseConfiguration {
                 .packages(CreditCardPAN.class)
                 .persistenceUnit("pan")
                 .build();
+    }
+
+    @Primary
+    @Bean
+    public PlatformTransactionManager panTransactionManager(
+            @Qualifier("panEntityManagerFactory") LocalContainerEntityManagerFactoryBean panEntityManagerFactor) {
+        return new JpaTransactionManager(Objects.requireNonNull(panEntityManagerFactor.getObject()));
     }
 }
