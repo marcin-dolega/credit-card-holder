@@ -12,6 +12,7 @@ import pl.dolega.creditcardmultidb.CreditCardConverter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "credit_card_pan")
 public class CreditCardPAN {
 
     @Id
