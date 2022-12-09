@@ -20,7 +20,16 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     @Override
     public CreditCard getCreditCardById(Long id) {
-        return null;
+        CreditCard creditCard = creditCardRepository.findById(id).orElseThrow();
+        CreditCardHolder creditCardHolder = creditCardHolderRepository.findByCreditCardId(id).orElseThrow();
+        CreditCardPAN creditCardPAN = creditCardPANRepository.findByCreditCardId(id).orElseThrow();
+
+        creditCard.setFirstName(creditCardHolder.getFirstName());
+        creditCard.setLastName(creditCardHolder.getLastName());
+        creditCard.setZipCode(creditCardHolder.getZipCode());
+        creditCard.setCreditCardNumber(creditCardPAN.getCreditCardNumber());
+
+        return creditCard;
     }
 
     @Transactional
