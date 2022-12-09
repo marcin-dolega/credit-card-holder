@@ -47,10 +47,11 @@ public class CardHolderDatabaseConfiguration {
 
         Properties properties = new Properties();
         properties.put("hibernate.hbm2dd.auto", "validate");
+        properties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
 
         LocalContainerEntityManagerFactoryBean emfb = builder
                 .dataSource(cardHolderDataSource)
-                .packages(CreditCard.class)
+                .packages(CreditCardHolder.class)
                 .persistenceUnit("cardholder")
                 .build();
 
