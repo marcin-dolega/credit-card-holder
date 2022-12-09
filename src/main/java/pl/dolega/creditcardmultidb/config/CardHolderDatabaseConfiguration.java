@@ -12,9 +12,11 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import pl.dolega.creditcardmultidb.domain.cardholder.CreditCardHolder;
+import pl.dolega.creditcardmultidb.domain.creditcard.CreditCard;
 
 import javax.sql.DataSource;
 import java.util.Objects;
+import java.util.Properties;
 
 @EnableJpaRepositories(
         basePackages = "pl.dolega.creditcardmultidb.domain.cardholder",
@@ -42,10 +44,18 @@ public class CardHolderDatabaseConfiguration {
     public LocalContainerEntityManagerFactoryBean cardHolderEntityManagerFactory (
             @Qualifier("cardHolderDataSource") DataSource cardHolderDataSource,
             EntityManagerFactoryBuilder builder) {
-        return builder.dataSource(cardHolderDataSource)
-                .packages(CreditCardHolder.class)
-                .persistenceUnit("cardHolder")
+
+        Properties properties = new Properties();
+        properties.put("hibernate.hbm2dd.auto", "validate");
+
+        LocalContainerEntityManagerFactoryBean emfb = builder
+                .dataSource(cardHolderDataSource)
+                .packages(CreditCard.class)
+                .persistenceUnit("cardholder")
                 .build();
+
+        emfb.setJpaProperties(properties);
+        return emfb;
     }
 
     @Bean

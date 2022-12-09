@@ -15,6 +15,7 @@ import pl.dolega.creditcardmultidb.domain.creditcard.CreditCard;
 
 import javax.sql.DataSource;
 import java.util.Objects;
+import java.util.Properties;
 
 @EnableJpaRepositories(
         basePackages = "pl.dolega.creditcardmultidb.domain.creditcard",
@@ -42,10 +43,18 @@ public class CardDatabaseConfiguration {
     public LocalContainerEntityManagerFactoryBean cardEntityManagerFactory (
             @Qualifier("cardDataSource") DataSource cardDataSource,
             EntityManagerFactoryBuilder builder) {
-        return builder.dataSource(cardDataSource)
+
+        Properties properties = new Properties();
+        properties.put("hibernate.hbm2dd.auto", "validate");
+
+        LocalContainerEntityManagerFactoryBean emfb = builder
+                .dataSource(cardDataSource)
                 .packages(CreditCard.class)
                 .persistenceUnit("card")
                 .build();
+
+        emfb.setJpaProperties(properties);
+        return emfb;
     }
 
     @Bean

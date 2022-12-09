@@ -12,10 +12,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+import pl.dolega.creditcardmultidb.domain.creditcard.CreditCard;
 import pl.dolega.creditcardmultidb.domain.pan.CreditCardPAN;
 
 import javax.sql.DataSource;
 import java.util.Objects;
+import java.util.Properties;
 
 @EnableJpaRepositories(
         basePackages = "pl.dolega.creditcardmultidb.domain.pan",
@@ -46,10 +48,18 @@ public class PanDatabaseConfiguration {
     public LocalContainerEntityManagerFactoryBean panEntityManagerFactory (
             @Qualifier("panDataSource") DataSource panDataSource,
             EntityManagerFactoryBuilder builder) {
-        return builder.dataSource(panDataSource)
-                .packages(CreditCardPAN.class)
+
+        Properties properties = new Properties();
+        properties.put("hibernate.hbm2dd.auto", "validate");
+
+        LocalContainerEntityManagerFactoryBean emfb = builder
+                .dataSource(panDataSource)
+                .packages(CreditCard.class)
                 .persistenceUnit("pan")
                 .build();
+
+        emfb.setJpaProperties(properties);
+        return emfb;
     }
 
     @Primary
